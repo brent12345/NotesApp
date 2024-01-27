@@ -33,18 +33,19 @@ export default {
       const errorMessage = ref("")
       const notes = ref([]) 
       let color = ref('')
-      // generate a random color for each back ground note
+      // generate a random color for each back ground note algo
       const getRandomColor = () => {
         color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
         return color
       }
-
+      // add a new note to the system
       const addNote = () => {
         if (newNote.value.length < 10) {
 
           return errorMessage.value = "note needs to be 10 charatures"
           
         }
+        // push in the new notes object
         notes.value.push({
           id: Math.floor(Math.random() * 100000),
           text: newNote.value,
