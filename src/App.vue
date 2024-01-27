@@ -2,7 +2,8 @@
   <main>
     <div v-if="showModal" class="overlay">
       <div class="modal">
-        <textarea name="note" v-model="newNote" id="note" cols="30" rows="10"></textarea>
+        <textarea name="note" v-model.trim="newNote" id="note" cols="30" rows="10"></textarea>
+        <p v-if="errorMessage"> {{ errorMessage }}</p>
         <button @click="addNote">Add Note</button>
         <button class="close" @click="showModal = false" >Close</button>
       </div>
@@ -13,7 +14,8 @@
         <button @click="showModal = true">+</button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" class="card" :style="{backgroundColor: note.backgroundColor}">
+        <div v-for="note in notes"
+        :key="note.id" class="card" :style="{backgroundColor: note.backgroundColor}">
           <p class="main-text">{{ note.text }}</p>
           <p class="date">{{ note.date.toLocaleDateString("en-US") }}</p>
         </div>
@@ -28,15 +30,21 @@ export default {
     setup(){
       const showModal = ref(false)
       const newNote = ref("") 
+      const errorMessage = ref("")
       const notes = ref([]) 
       let color = ref('')
-
+      // generate a random color for each back ground note
       const getRandomColor = () => {
         color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
         return color
       }
 
       const addNote = () => {
+        if (newNote.value.length < 10) {
+
+          return errorMessage.value = "note needs to be 10 charatures"
+          
+        }
         notes.value.push({
           id: Math.floor(Math.random() * 100000),
           text: newNote.value,
@@ -46,9 +54,10 @@ export default {
         console.log(addNote)
         showModal.value = false
         newNote.value = ''
+        errorMessage.value = ''
           
       }
-      return { showModal, newNote, addNote, notes}
+      return { showModal, newNote, addNote, notes, errorMessage}
     }
 }
 </script>
@@ -146,5 +155,9 @@ export default {
   .modal .close {
     background-color: rgb(193, 15, 15);
     margin-top: 7px;
+  }
+
+  .modal p {
+    color: red;
   }
 </style>
